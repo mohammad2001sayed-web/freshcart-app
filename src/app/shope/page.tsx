@@ -3,6 +3,8 @@ import { getAllProducts } from "../home.services"; // عدل مسار home.servi
 import Link from "next/link";
 import { Layers } from "lucide-react";
 
+
+export const dynamic = "force-dynamic";
 export default async function ShopPage() {
   const productList = await getAllProducts();
 

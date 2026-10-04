@@ -1,20 +1,19 @@
 import ProductCard from "@/components/ProductCard/ProductCard";
 import { getAllProducts } from "./home.services";
-import Slider from "@/components/Slider/Slider";
-import Image from "next/image";
+// import Slider from "@/components/Slider/Slider";
+// import Image from "next/image";
 
 import HomeSlider from "@/components/HomeSlider/HomeSlider";
 // import CategorySlider from "@/components/CategorySlider/CategorySlider";
 import { lazy, Suspense } from "react";
 import ServiceFeatures from "@/components/ServiceFeatures/ServiceFeatures";
-import CategorySlider from "@/components/CategorySlider/CategorySlider";
 import DealsSection from "@/components/DealsSection/DealsSection";
 import ShopByCategory from "@/components/ShopByCategory/ShopByCategory";
 import NewsletterAppBanner from "@/components/NewsletterAppBanner/NewsletterAppBanner";
 
 const Mo = lazy(() => import("@/components/CategorySlider/CategorySlider"));
 // serch next dinamic
-
+export const dynamic = "force-dynamic";
 export default async function Home() {
   const productList = await getAllProducts();
 

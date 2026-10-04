@@ -4,6 +4,8 @@ import Image from "next/image";
 import { Layers, ArrowRight } from "lucide-react";
 import { getAllCategories } from "./category.services";
 
+
+export const dynamic = "force-dynamic";
 export default async function CategoriesPage() {
   const categoriesList = await getAllCategories();
 
