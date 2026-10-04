@@ -4,7 +4,7 @@ import { getWishlist, removeProductFromWishlist } from "./wishlist.action";
 import { getUserCart } from "../../components/AddToCart/AddToCart.action"; // عدل مسار getUserCart
 import AddToCart from "@/components/AddToCart/AddToCart";
 import { Heart, ShoppingCart, Trash } from "lucide-react";
-
+export const dynamic = "force-dynamic";
 export default async function WishlistPage() {
   const [wishlistRes, userCartRes] = await Promise.all([
     getWishlist(),

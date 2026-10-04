@@ -1,4 +1,4 @@
 import * as zod from "zod";
-import { rigesterSchema } from "./register.zod";
+import { registerSchema } from "./register.zod";
 
-export type RigesterDataType = zod.infer<typeof rigesterSchema>;
+export type RigesterDataType = zod.infer<typeof registerSchema>;
