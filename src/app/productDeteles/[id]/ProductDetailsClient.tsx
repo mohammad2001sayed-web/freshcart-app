@@ -334,12 +334,12 @@ export default function ProductDetailsClient({
                 </AddToCart>
               </div>
 
-              <Link
-                href={`/payment/${productId}`}
+              <button
+                type="button"
                 className="w-full sm:flex-1 h-12 bg-slate-900 hover:bg-black text-white font-semibold rounded-xl flex items-center justify-center gap-2 shadow-sm transition-colors text-sm cursor-pointer"
               >
                 <Zap fill="white" size={18} /> Buy Now
-              </Link>
+              </button>
             </div>
 
             <div className="flex items-center gap-3 mb-6">
