@@ -2,19 +2,28 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getUserToken } from "../myUtil";
 import { PaymentDataType } from "./Payment.interface";
+import { auth } from "../../../auth";
 
 export async function handleCreateCashOrder(
   shippingAddress: PaymentDataType,
   cartId: string,
 ) {
+  const session = await auth();
+  const token = session?.user?.tkn;
+
+  if (!token) {
+    return {
+      message: "You must be logged in to place an order.",
+    };
+  }
+
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/v2/orders/${cartId}`,
     {
       method: "POST",
       headers: {
-        token: (await getUserToken()) as string,
+        token,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -24,10 +33,6 @@ export async function handleCreateCashOrder(
   );
 
   const data = await res.json();
-  console.log(
-  "Cash Order FULL:",
-  JSON.stringify(res, null, 2)
-);
 
   console.log("Cash Order:", data);
 
@@ -49,12 +54,21 @@ export async function handleCreateOnlineOrder(
   shippingAddress: PaymentDataType,
   cartId: string,
 ) {
+  const session = await auth();
+  const token = session?.user?.tkn;
+
+  if (!token) {
+    return {
+      message: "You must be logged in to place an order.",
+    };
+  }
+
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/orders/checkout-session/${cartId}`,
     {
       method: "POST",
       headers: {
-        token: (await getUserToken()) as string,
+        token,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -69,9 +83,6 @@ export async function handleCreateOnlineOrder(
 
   return data;
 }
-
-
-
 
 
 

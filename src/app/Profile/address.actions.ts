@@ -1,18 +1,36 @@
 "use server";
 
-import { getUserToken } from "../myUtil";
-import { AddressDataType, AddressesResponse, SingleAddressResponse } from "./profile.interface";
+import { auth } from "../../../auth";
+import {
+  AddressDataType,
+  AddressesResponse,
+  SingleAddressResponse,
+} from "./profile.interface";
 
-
+async function getToken(): Promise<string | null> {
+  const session = await auth();
+  return session?.user?.tkn ?? null;
+}
 
 // 🔹 Get all saved addresses for the logged-in user
 export async function handleGetAddresses(): Promise<AddressesResponse> {
+  const token = await getToken();
+
+  if (!token) {
+    return {
+      status: "error",
+      message: "You must be logged in to view your addresses.",
+      results: 0,
+      data: [],
+    } as AddressesResponse;
+  }
+
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/addresses`,
     {
       method: "GET",
       headers: {
-        token: (await getUserToken()) as string,
+        token,
       },
       cache: "no-store",
     },
@@ -26,12 +44,21 @@ export async function handleGetAddresses(): Promise<AddressesResponse> {
 export async function handleAddAddress(
   address: AddressDataType,
 ): Promise<SingleAddressResponse> {
+  const token = await getToken();
+
+  if (!token) {
+    return {
+      status: "error",
+      message: "You must be logged in to add an address.",
+    } as SingleAddressResponse;
+  }
+
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/addresses`,
     {
       method: "POST",
       headers: {
-        token: (await getUserToken()) as string,
+        token,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(address),
@@ -50,7 +77,14 @@ export async function handleUpdateAddress(
   addressId: string,
   address: AddressDataType,
 ): Promise<SingleAddressResponse & { usedFallback?: boolean }> {
-  const token = (await getUserToken()) as string;
+  const token = await getToken();
+
+  if (!token) {
+    return {
+      status: "error",
+      message: "You must be logged in to update an address.",
+    } as SingleAddressResponse;
+  }
 
   // المحاولة الأولى: PUT مباشر
   const res = await fetch(
@@ -102,12 +136,21 @@ export async function handleUpdateAddress(
 export async function handleRemoveAddress(
   addressId: string,
 ): Promise<{ status: string; message?: string }> {
+  const token = await getToken();
+
+  if (!token) {
+    return {
+      status: "error",
+      message: "You must be logged in to remove an address.",
+    };
+  }
+
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/addresses/${addressId}`,
     {
       method: "DELETE",
       headers: {
-        token: (await getUserToken()) as string,
+        token,
       },
     },
   );
