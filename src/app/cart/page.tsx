@@ -140,7 +140,7 @@ export default async function page() {
               {/* زر الدفع باستخدام اللينك الخاص بيك */}
               <Link
                 href={`/payment/${cartId}`}
-                className="w-full py-3 bg-[#00a651] hover:bg-[#008e45] text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all text-sm block text-center"
+                className="w-full py-3 bg-[#00a651] hover:bg-[#008e45] text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all text-sm  text-center"
               >
                 <User size={18} /> Login to Checkout
               </Link>
