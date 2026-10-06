@@ -15,12 +15,9 @@ import {
   BriefcaseBusiness,
   Van,
   Check,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 import AddToCart from "@/components/AddToCart/AddToCart";
 import WishlistButton from "@/components/WishlistButton/WishlistButton";
-import ProductCard from "../../../components/ProductCard/ProductCard";
 import { Product } from "@/app/home.interface";
 import { productDetelesType } from "./productDeteles.interface";
 
@@ -43,13 +40,11 @@ type SingleProductType = Product | productDetelesType | any;
 interface ProductDetailsProps {
   product: SingleProductType;
   initialInWishlist?: boolean;
-  relatedProducts?: SingleProductType[];
 }
 
 export default function ProductDetailsClient({
   product,
   initialInWishlist = false,
-  relatedProducts = [],
 }: ProductDetailsProps) {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -260,7 +255,8 @@ export default function ProductDetailsClient({
                   <span className="px-2.5 py-0.5 bg-red-500 text-white rounded-full text-xs font-bold">
                     Save{" "}
                     {Math.round(
-                      ((priceAfterDiscount - price) / priceAfterDiscount) * 100,
+                      ((priceAfterDiscount - price) / priceAfterDiscount) *
+                        100,
                     )}
                     %
                   </span>
@@ -637,60 +633,6 @@ export default function ProductDetailsClient({
           </TabsContent>
         </Tabs>
       </div>
-
-      {/* 🔹 قسم المنتجات المقترحة (You May Also Like) */}
-      {relatedProducts.length > 0 && (
-        <section className="mt-12 bg-white p-6 md:p-8 rounded-3xl border border-gray-100 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-6 bg-emerald-600 rounded-full inline-block"></span>
-              <h2 className="text-xl font-bold text-gray-900">
-                You May Also Like
-              </h2>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                id="related-prev"
-                className="p-2 rounded-lg bg-gray-100 hover:bg-emerald-600 hover:text-white transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                type="button"
-                id="related-next"
-                className="p-2 rounded-lg bg-gray-100 hover:bg-emerald-600 hover:text-white transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
-          </div>
-
-          <Swiper
-            modules={[Navigation]}
-            navigation={{
-              prevEl: "#related-prev",
-              nextEl: "#related-next",
-            }}
-            spaceBetween={16}
-            slidesPerView={1}
-            breakpoints={{
-              640: { slidesPerView: 2 },
-              768: { slidesPerView: 3 },
-              1024: { slidesPerView: 4 },
-              1280: { slidesPerView: 5 },
-            }}
-            className="w-full"
-          >
-            {relatedProducts.map((item: SingleProductType) => (
-              <SwiperSlide key={item._id || item.id} className="h-auto">
-                <ProductCard prod={item} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </section>
-      )}
     </div>
   );
 }
