@@ -2,8 +2,19 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { PaymentDataType } from "./Payment.interface";
 import { auth } from "../../../auth";
+
+// 🔹 بيجيب الدومين الحالي الفعلي (محليًا أو على Vercel) بدل ما يفضل
+// متسجل على localhost. الـ API محتاج "url" ده عشان يعرف يرجّع المستخدم
+// فين بعد ما يخلّص الدفع على Stripe.
+async function getCurrentOrigin() {
+  const headersList = await headers();
+  const host = headersList.get("host");
+  const protocol = host?.includes("localhost") ? "http" : "https";
+  return `${protocol}://${host}`;
+}
 
 export async function handleCreateCashOrder(
   shippingAddress: PaymentDataType,
@@ -63,8 +74,10 @@ export async function handleCreateOnlineOrder(
     };
   }
 
+  const origin = await getCurrentOrigin();
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/orders/checkout-session/${cartId}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/orders/checkout-session/${cartId}?url=${origin}`,
     {
       method: "POST",
       headers: {
@@ -83,33 +96,3 @@ export async function handleCreateOnlineOrder(
 
   return data;
 }
-
-
-
-
-
-
-
-// "use server";
-// import { revalidatePath } from "next/cache";
-// import { getUserToken } from "../myUtil";
-// import { PaymentDataType } from "./Payment.interface";
-
-// export async function handleCreateOrder(shippingAddress:PaymentDataType , cartId:string) {
-//     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v2/orders/${cartId}`,
-//          {method:"POST",
-//             headers:{
-//                 token:(await getUserToken()) as string,
-//                 "Content-Type": "application/json",
-
-//             }
-//             ,body:JSON.stringify({shippingAddress})
-
-//     })
-
-//     const data = await res.json();
-//     revalidatePath("/cart");
-//     console.log("Create Order",data);
-//     return data
-
-// }
