@@ -275,7 +275,7 @@ export default function ProductDetailsClient({
               {description}
             </p>
 
-            <div className="bg-gray-50/80 p-4 rounded-2xl border border-gray-100 mb-6 flex items-center justify-between gap-4">
+            <div className="bg-gray-50/80 p-4 rounded-2xl border border-gray-100 mb-6 block md:flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <span className="text-xs font-semibold text-gray-600">
                   Quantity:
