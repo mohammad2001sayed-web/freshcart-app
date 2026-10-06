@@ -400,21 +400,21 @@ export default function ProductDetailsClient({
           <TabsList className=" justify-start border-b border-gray-100 rounded-none bg-transparent p-0 h-auto gap-6 mb-6">
             <TabsTrigger
               value="details"
-              className="text-sm font-bold pb-3 rounded-none border-b-2 border-transparent   data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-[#16A34A] transition-all cursor-pointer px-0"
+              className="text-[10px] md:text-sm font-bold pb-3 rounded-none border-b-2 border-transparent   data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-[#16A34A] transition-all cursor-pointer px-0"
             >
               <BriefcaseBusiness /> Product Details
             </TabsTrigger>
 
             <TabsTrigger
               value="reviews"
-              className="text-sm font-bold pb-3 rounded-none border-b-2 border-transparent   data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-[#16A34A] transition-all cursor-pointer px-0"
+              className="text-[10px] md:text-sm font-bold pb-3 rounded-none border-b-2 border-transparent   data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-[#16A34A] transition-all cursor-pointer px-0"
             >
               <Star className="fill-accent" /> Reviews ({ratingsQuantity})
             </TabsTrigger>
 
             <TabsTrigger
               value="shipping"
-              className="text-sm font-bold pb-3 rounded-none border-b-2 border-transparent   data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-[#16A34A] transition-all cursor-pointer px-0"
+              className="text-[10px] md:text-sm font-bold pb-3 rounded-none border-b-2 border-transparent   data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-[#16A34A] transition-all cursor-pointer px-0"
             >
               <Van /> Shipping & Returns
             </TabsTrigger>
