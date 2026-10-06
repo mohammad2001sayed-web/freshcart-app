@@ -311,10 +311,10 @@ export default function ProductDetailsClient({
               </div>
 
               <div className="flex ">
-                <span className="text-[10px] md:text-xs text-gray-400 block font-normal text-right">
+                <span className="text-xs text-gray-400 block font-normal text-right">
                   Total Price:
                 </span>
-                <span className="text-[12px] md:text-xl font-extrabold text-emerald-600">
+                <span className="text-xl font-extrabold text-emerald-600">
                   {totalPrice} EGP
                 </span>
               </div>
@@ -397,29 +397,28 @@ export default function ProductDetailsClient({
       {/* 📑 Bottom Section: Product Tabs */}
       <div className="bg-white rounded-3xl border border-gray-100 p-6 md:p-8 shadow-sm">
         <Tabs defaultValue="details" className="">
-          <TabsList className=" justify-start border-b border-gray-100 rounded-none bg-transparent p-0 h-auto gap-6 mb-6">
-            <TabsTrigger
-              value="details"
-              className="text-[10px] md:text-sm font-bold pb-3 rounded-none border-b-2 border-transparent   data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-[#16A34A] transition-all cursor-pointer px-0"
-            >
-              <BriefcaseBusiness /> Product Details
-            </TabsTrigger>
+<TabsList className=" max-w-full overflow-x-auto md:overflow-x-visible flex-nowrap justify-start border-b border-gray-100 rounded-none bg-transparent p-0 h-auto gap-6 mb-6 no-scrollbar">
+  <TabsTrigger
+    value="details"
+    className="text-sm font-bold pb-3 rounded-none border-b-2 border-transparent shrink-0 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-[#16A34A] transition-all cursor-pointer px-0"
+  >
+    <BriefcaseBusiness /> Product Details
+  </TabsTrigger>
 
-            <TabsTrigger
-              value="reviews"
-              className="text-[10px] md:text-sm font-bold pb-3 rounded-none border-b-2 border-transparent   data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-[#16A34A] transition-all cursor-pointer px-0"
-            >
-              <Star className="fill-accent" /> Reviews ({ratingsQuantity})
-            </TabsTrigger>
+  <TabsTrigger
+    value="reviews"
+    className="text-sm font-bold pb-3 rounded-none border-b-2 border-transparent shrink-0 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-[#16A34A] transition-all cursor-pointer px-0"
+  >
+    <Star className="fill-accent" /> Reviews ({ratingsQuantity})
+  </TabsTrigger>
 
-            <TabsTrigger
-              value="shipping"
-              className="text-[10px] md:text-sm font-bold pb-3 rounded-none border-b-2 border-transparent   data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-[#16A34A] transition-all cursor-pointer px-0"
-            >
-              <Van /> Shipping & Returns
-            </TabsTrigger>
-          </TabsList>
-
+  <TabsTrigger
+    value="shipping"
+    className="text-sm font-bold pb-3 rounded-none border-b-2 border-transparent shrink-0 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-[#16A34A] transition-all cursor-pointer px-0"
+  >
+    <Van /> Shipping & Returns
+  </TabsTrigger>
+</TabsList>
           <TabsContent value="details" className="mt-0 outline-none">
             <div>
               <h3 className="text-base font-bold text-gray-900 mb-3">
