@@ -1,14 +1,19 @@
 "use server";
 
-import { getUserToken } from "../myUtil"; // أو المكان الصحيح لـ myUtil عندك
 import { revalidatePath } from "next/cache";
+import { auth } from "../../../auth";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+async function getToken(): Promise<string | null> {
+  const session = await auth();
+  return session?.user?.tkn ?? null;
+}
 
 // 1️⃣ جلب قائمة المنتجات المفضلة (GET Wishlist)
 export async function getWishlist() {
   try {
-    const token = await getUserToken();
+    const token = await getToken();
     if (!token) {
       return { status: "fail", message: "User not authenticated", data: [] };
     }
@@ -16,7 +21,7 @@ export async function getWishlist() {
     const res = await fetch(`${BASE_URL}/api/v1/wishlist`, {
       method: "GET",
       headers: {
-        token: token as string,
+        token,
         "Content-Type": "application/json",
       },
       cache: "no-store",
@@ -37,7 +42,7 @@ export async function getWishlist() {
 // 2️⃣ إضافة منتج للمفضلة (POST Wishlist)
 export async function addProductToWishlist(productId: string) {
   try {
-    const token = await getUserToken();
+    const token = await getToken();
     if (!token) {
       return { status: "fail", message: "برجاء تسجيل الدخول أولاً" };
     }
@@ -45,7 +50,7 @@ export async function addProductToWishlist(productId: string) {
     const res = await fetch(`${BASE_URL}/api/v1/wishlist`, {
       method: "POST",
       headers: {
-        token: token as string,
+        token,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ productId }),
@@ -67,7 +72,7 @@ export async function addProductToWishlist(productId: string) {
 // 3️⃣ حذف منتج من المفضلة (DELETE Wishlist)
 export async function removeProductFromWishlist(productId: string) {
   try {
-    const token = await getUserToken();
+    const token = await getToken();
     if (!token) {
       return { status: "fail", message: "برجاء تسجيل الدخول أولاً" };
     }
@@ -75,7 +80,7 @@ export async function removeProductFromWishlist(productId: string) {
     const res = await fetch(`${BASE_URL}/api/v1/wishlist/${productId}`, {
       method: "DELETE",
       headers: {
-        token: token as string,
+        token,
         "Content-Type": "application/json",
       },
     });
