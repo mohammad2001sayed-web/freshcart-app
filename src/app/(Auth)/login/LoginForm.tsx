@@ -56,6 +56,7 @@ export default function LoginForm() {
         throw new Error("Invalid credentials");
       }
       router.push("/");
+      router.refresh();
       return "Logged in successfully";
     });
 
