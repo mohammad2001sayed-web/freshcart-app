@@ -12,7 +12,10 @@ import {
   Loader2,
   ShieldCheck,
 } from "lucide-react";
-import { ChangePasswordDataType, UpdateProfileDataType } from "../setting.interface";
+import {
+  ChangePasswordDataType,
+  UpdateProfileDataType,
+} from "../setting.interface";
 import { handleChangePassword, handleUpdateProfile } from "../setting.action";
 
 export default function SettingsClient() {
@@ -129,7 +132,9 @@ export default function SettingsClient() {
             <h3 className="text-sm font-bold text-gray-900">
               Profile Information
             </h3>
-            <p className="text-xs text-gray-500">Update your personal details</p>
+            <p className="text-xs text-gray-500">
+              Update your personal details
+            </p>
           </div>
         </div>
 
@@ -259,9 +264,7 @@ export default function SettingsClient() {
             <Lock className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-gray-900">
-              Change Password
-            </h3>
+            <h3 className="text-sm font-bold text-gray-900">Change Password</h3>
             <p className="text-xs text-gray-500">
               Update your account password
             </p>
@@ -320,14 +323,15 @@ export default function SettingsClient() {
                 className={`w-full px-3 py-2.5 pr-10 text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-orange-400 ${
                   passwordErrors.password ? "border-red-400" : "border-gray-200"
                 }`}
-               {...registerPassword("password", {
-  required: "اكتب كلمة المرور الجديدة",
-  pattern: {
-    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_\-+=])[A-Za-z\d@$!%*?&#^()_\-+=]{8,}$/,
-    message:
-      "لازم تحتوي على 8 أحرف على الأقل: حرف كبير وحرف صغير ورقم ورمز خاص (@ # $ إلخ)",
-  },
-})}
+                {...registerPassword("password", {
+                  required: "اكتب كلمة المرور الجديدة",
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_\-+=])[A-Za-z\d@$!%*?&#^()_\-+=]{8,}$/,
+                    message:
+                      "لازم تحتوي على 8 أحرف على الأقل: حرف كبير وحرف صغير ورقم ورمز خاص (@ # $ إلخ)",
+                  },
+                })}
               />
               <button
                 type="button"
