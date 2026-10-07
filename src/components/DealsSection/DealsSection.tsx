@@ -1,5 +1,8 @@
+"use client";
+
 import { ArrowRight, Flame, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 const deals = [
   {
@@ -31,8 +34,31 @@ const deals = [
 ];
 
 export default function DealsSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShow(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.2,
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="py-6">
+    <section ref={sectionRef} className="py-6 overflow-hidden">
       <div className="container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {deals.map((deal, index) => {
@@ -41,7 +67,21 @@ export default function DealsSection() {
             return (
               <div
                 key={index}
-                className={`relative overflow-hidden rounded-2xl bg-linear-to-br ${deal.gradient} p-6 md:p-7 text-white`}
+                className={`
+                  relative overflow-hidden rounded-2xl
+                  bg-linear-to-br ${deal.gradient}
+                  p-6 md:p-7 text-white
+
+                  transition-all duration-700 ease-out
+
+                  ${
+                    show
+                      ? "translate-x-0 opacity-100"
+                      : index === 0
+                      ? "-translate-x-12 opacity-0"
+                      : "translate-x-12 opacity-0"
+                  }
+                `}
               >
                 {/* الدائرة اللي فوق على اليمين */}
                 <div className="absolute -top-16 -right-16 w-32 h-32 rounded-full bg-white/10" />
@@ -49,7 +89,6 @@ export default function DealsSection() {
                 {/* الدائرة اللي تحت على الشمال */}
                 <div className="absolute -bottom-16 -left-16 w-36 h-36 rounded-full bg-white/10" />
 
-                {/* Content */}
                 <div className="relative z-10 max-w-lg">
                   {/* Label */}
                   <div
@@ -57,7 +96,9 @@ export default function DealsSection() {
                   >
                     <Icon className={deal.colorIcon} size={16} />
 
-                    <span className="text-sm font-medium">{deal.label}</span>
+                    <span className="text-sm font-medium">
+                      {deal.label}
+                    </span>
                   </div>
 
                   {/* Title */}
@@ -78,13 +119,15 @@ export default function DealsSection() {
 
                     <span className="text-sm">
                       Use code:{" "}
-                      <strong className="font-extrabold">{deal.code}</strong>
+                      <strong className="font-extrabold">
+                        {deal.code}
+                      </strong>
                     </span>
                   </div>
 
                   {/* Button */}
-                  <Link 
-                    href="/"
+                  <Link
+                    href="/shope"
                     className={`bg-white ${deal.buttonText} w-fit rounded-full px-6 py-2.5 text-sm md:text-base font-semibold flex items-center gap-2 hover:opacity-95 transition-opacity`}
                   >
                     <span>{deal.button}</span>
