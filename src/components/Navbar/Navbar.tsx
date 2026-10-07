@@ -164,8 +164,14 @@ export default function Navbar() {
 
       {data ? (
         <>
-          <div className="py-3 px-4 text-sm text-gray-600">
-            Welcome: {data?.user?.name}
+          <div className="py-3 text-sm text-gray-600">
+            <Link
+              className="flex items-center gap-2 py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
+              href="/Profile"
+            >
+              
+              <User size={20} /> {data?.user?.name}
+            </Link>
           </div>
           <button
             onClick={() => {
