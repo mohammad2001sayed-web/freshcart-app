@@ -28,7 +28,7 @@ export default function () {
           </span>
         </div>
         {/* Right Side - Contact */}
-        <div className="rightside flex items-center gap-5">
+        <div className="rightside flex items-center justify-content gap-5">
           <a
             className="flex items-center gap-1 text-[#656D7C] hover:text-main-color"
             href="tel:+18001234567"
@@ -41,6 +41,12 @@ export default function () {
           >
             <Mail size={17} /> support@freshcart.com
           </a>
+                                        <div className="flex ">
+                                <Link href="/Profile" className="flex items-center gap-1 text-[#6A7282] hover:text-main-color">
+                                <User size={17} />  {data?.user?.name || "Alice Michael"}
+                                </Link>
+                                </div>
+
         </div>
         {/* Right Side - Auth */}
 
