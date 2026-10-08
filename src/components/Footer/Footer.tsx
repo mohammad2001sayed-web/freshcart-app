@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import imgFooter from "@/assets/logo.svg";
 import { Mail, MapPin, Phone } from "lucide-react";
+import ServiceFeatures from "../ServiceFeatures/ServiceFeatures";
 
 // =======================
 // Footer Column
@@ -68,6 +69,8 @@ function SocialButton({
 
 export default function Footer() {
   return (
+    <>
+    <ServiceFeatures variant="footer" />
     <footer className="bg-[#0b132a] text-white">
       {/* ================= TOP FOOTER ================= */}
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -306,5 +309,6 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+    </>
   );
 }

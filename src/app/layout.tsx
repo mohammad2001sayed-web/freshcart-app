@@ -6,7 +6,6 @@ import Navbar from "@/components/Navbar/Navbar";
 import { Toaster } from "@/components/ui/toast";
 import MySession from "@/components/MySession/MySession";
 import Footer from "@/components/Footer/Footer";
-import ServiceFeatures from "@/components/ServiceFeatures/ServiceFeatures";
 
 const inter = Exo({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -30,7 +29,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <Toaster />
-          <ServiceFeatures variant="footer" />
+          
           <Footer/>
         </MySession>
       </body>
