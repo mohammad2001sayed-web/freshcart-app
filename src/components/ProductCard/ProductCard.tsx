@@ -70,10 +70,12 @@ export default async function ProductCard({ prod }: { prod: Product }) {
             </Badge>
           </CardAction>
           <CardTitle className="text-main-color text-xl">
-            {title.split(" ").slice(0, 2).join(" ")}
+            {title.split(" ").slice(0, 1).join(" ")}
           </CardTitle>
           <div>
-            <h3 className="text-md">
+            <div className="flex justify-center items-center gap-2">
+              
+            <h3 className="text-md flex">
               price:{" "}
               {priceAfterDiscount ? (
                 <div className="flex gap-2 justify-center">
@@ -84,6 +86,7 @@ export default async function ProductCard({ prod }: { prod: Product }) {
                 price
               )}
             </h3>
+            </div>
             <div className="flex justify-center items-center">
               {Array.from({ length: Math.floor(ratingsAverage) }).map(
                 (e, i) => (
@@ -100,9 +103,9 @@ export default async function ProductCard({ prod }: { prod: Product }) {
 
             <h3>quantity: {quantity}</h3>
           </div>
-          <CardDescription>
+          {/* <CardDescription>
             {description.split(" ").slice(0, 8).join(" ")}
-          </CardDescription>
+          </CardDescription> */}
         </CardHeader>
       </Link>
       <CardFooter className="absolute bottom-0 inset-e-0">
