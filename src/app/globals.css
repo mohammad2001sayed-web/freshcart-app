@@ -48,6 +48,7 @@
 .swiper-button-prev {
   width: 30px !important;
   height: 30px !important;
+  padding: 6px !important;
   background-color: white;
   border-radius: 50%;
   color: #22c55e !important;
