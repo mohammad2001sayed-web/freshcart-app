@@ -25,9 +25,9 @@ function loading() {
 
             ading
           </h1>
-          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce self-end-safe" />
-          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce self-end-safe [animation-delay:-.3s]" />
-          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce self-end-safe [animation-delay:-.5s]" />
+          <div className="size-3 lg:size-4 rounded-full bg-blue-700 animate-bounce self-end-safe" />
+          <div className="size-3 lg:size-4 rounded-full bg-blue-700 animate-bounce self-end-safe [animation-delay:-.3s]" />
+          <div className="size-3 lg:size-4 rounded-full bg-blue-700 animate-bounce self-end-safe [animation-delay:-.5s]" />
         </div>
       </div>
     </div>
