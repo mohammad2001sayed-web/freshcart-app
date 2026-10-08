@@ -72,14 +72,14 @@ export default function DealsSection() {
                   bg-linear-to-br ${deal.gradient}
                   p-6 md:p-7 text-white
 
-                  transition-all duration-700 ease-out
+                  transition-transform duration-700 ease-out
 
                   ${
                     show
                       ? "translate-x-0 opacity-100"
                       : index === 0
-                      ? "-translate-x-12 opacity-0"
-                      : "translate-x-12 opacity-0"
+                      ? "-translate-x-30 opacity-0"
+                      : "translate-x-30 opacity-0"
                   }
                 `}
               >
