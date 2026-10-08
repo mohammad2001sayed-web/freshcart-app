@@ -45,14 +45,14 @@ export default async function ProductCard({ prod }: { prod: Product }) {
   return (
     <Card className="relative mx-auto w-full max-w-sm pt-0 hover:shadow-2xl hover:-translate-y-2 duration-300">
       <Link href={`/productDeteles/${_id}`}>
-        <div className="relative h-60">
+        <div className="relative aspect-square w-full overflow-hidden bg-[#f5f5f5]">
           <Image
             fill
-            sizes="(max-width:630px ),100vw,(max-width:768px ),50vw,(max-width:1024px ),25vw,"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             loading="lazy"
             src={imageCover}
-            alt="Event cover"
-            className=" "
+            alt={title}
+            className="object-contain p-4"
           />
           <div className="absolute top-2 right-2 flex flex-col items-center gap-4">
             <WishlistButton productId={_id} initialInWishlist={isInWishlist} />
@@ -74,18 +74,19 @@ export default async function ProductCard({ prod }: { prod: Product }) {
           </CardTitle>
           <div>
             <div className="flex justify-center items-center gap-2">
-              
-            <h3 className="text-md flex">
-              price:{" "}
-              {priceAfterDiscount ? (
-                <div className="flex gap-2 justify-center">
-                  <span className="line-through">{price}</span>{" "}
-                  <span className="text-main-color">{priceAfterDiscount}</span>
-                </div>
-              ) : (
-                price
-              )}
-            </h3>
+              <h3 className="text-md flex">
+                price:{" "}
+                {priceAfterDiscount ? (
+                  <div className="flex gap-2 justify-center">
+                    <span className="line-through">{price}</span>{" "}
+                    <span className="text-main-color">
+                      {priceAfterDiscount}
+                    </span>
+                  </div>
+                ) : (
+                  price
+                )}
+              </h3>
             </div>
             <div className="flex justify-center items-center">
               {Array.from({ length: Math.floor(ratingsAverage) }).map(
@@ -109,7 +110,7 @@ export default async function ProductCard({ prod }: { prod: Product }) {
         </CardHeader>
       </Link>
       <CardFooter className="absolute bottom-0 inset-e-0">
-        <AddToCart   productId={_id} />
+        <AddToCart productId={_id} />
       </CardFooter>
     </Card>
   );
