@@ -20,8 +20,7 @@ export default async function SingleCategoryPage({ params }: PageProps) {
   ]);
 
   return (
-    <main className="p-6 max-w-7xl mx-auto min-h-screen">
-      {/* 🔹 هيدر التصنيف */}
+    <>
       <div className="flex items-center gap-4 mb-8 bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
         {category?.image && (
           <div className="relative w-16 h-16 rounded-full overflow-hidden bg-white shadow-sm">
@@ -42,6 +41,8 @@ export default async function SingleCategoryPage({ params }: PageProps) {
           </p>
         </div>
       </div>
+    <main className="p-6 max-w-7xl mx-auto min-h-screen">
+      {/* 🔹 هيدر التصنيف */}
 
       {/* 🔹 شبكة عرض المنتجات */}
       {products && products.length > 0 ? (
@@ -126,5 +127,6 @@ export default async function SingleCategoryPage({ params }: PageProps) {
         </div>
       )}
     </main>
+  </>
   );
 }
