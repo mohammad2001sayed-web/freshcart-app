@@ -12,7 +12,7 @@ export default function HomeSlider() {
             h3: "Fresh Products Delivered to Your Door",
             p: "Get 20% off  your first order",
             btn1: "Shop Now",
-            link1: "/products", // رابط الزر الأول
+            link1: "/shope", // رابط الزر الأول
             btn2: "View All",
             link2: "/deals", // رابط الزر الثاني
             btn1Class:
@@ -24,7 +24,7 @@ export default function HomeSlider() {
             h3: "Premium Quality Guaranteed",
             p: "Find from from to year table",
             btn1: "Shop Now",
-            link1: "/categorise",
+            link1: "/shope",
             btn2: "Learn More",
             link2: "/all-products", // <--- Tilføj link2 her
             btn1Class: "text-[#547FFF]",
@@ -33,7 +33,7 @@ export default function HomeSlider() {
             h3: "Fast & Free Delivery",
             p: "Same day delivery available",
             btn1: "Grab Deal",
-            link1: "/brands",
+            link1: "/shope",
             btn2: "See More",
             link2: "/about",
             btn1Class: "text-[#B592FF]",
