@@ -43,7 +43,7 @@ export default function () {
           </a>
                                         <div className="flex ">
                                 <Link href="/Profile" className="flex items-center gap-1 text-[#6A7282] hover:text-main-color">
-                                <User size={17} />  {data?.user?.name || "Alice Michael"}
+                                <User size={17} />  {data?.user?.name || "Hello User"}
                                 </Link>
                                 </div>
 
