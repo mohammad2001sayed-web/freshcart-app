@@ -3,6 +3,9 @@ import type { DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { jwtDecode } from "jwt-decode";
 import { LoginResponseType } from "../(Auth)/login/login.interface";
+import Google from "next-auth/providers/google";
+import Facebook from "next-auth/providers/facebook";
+import { exchangeOAuthUserForBackendToken } from "./oauthBackend";
 
 interface DecodedToken {
   id: string;
@@ -73,11 +76,41 @@ export const authJsConfing: NextAuthConfig = {
         return null;
       },
     }),
+     Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+    Facebook({
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    }),
   ],
   pages: {
     signIn: "/login",
   },
   callbacks: {
+    signIn: async function ({ user, account }) {
+      // الدخول العادي بالإيميل والباسورد ما يتغيّرش
+      if (!account || account.provider === "credentials") return true;
+
+      if (!user.email) return false;
+
+      const backendUser = await exchangeOAuthUserForBackendToken({
+        email: user.email,
+        name: user.name,
+      });
+      if (!backendUser) return false;
+
+      // نفس اللي بتعمله في authorize: الـ id الحقيقي بيتطلع من التوكن
+      const decoded = jwtDecode<DecodedToken>(backendUser.tkn);
+
+      user.tkn = backendUser.tkn;
+      user._id = decoded.id;
+      user.role = backendUser.role;
+      user.phone = backendUser.phone;
+      user.name = backendUser.name ?? user.name;
+      return true;
+    },
     jwt: async function ({ user, token, trigger, session }) {
       if (user) {
         token.credantialsToken = user.tkn;
@@ -107,6 +140,29 @@ export const authJsConfing: NextAuthConfig = {
     },
   },
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // import { NextAuthConfig } from "next-auth";
 // import Credentials from "next-auth/providers/credentials";
 // import { LoginResponseType } from "../(Auth)/login/login.interface";
