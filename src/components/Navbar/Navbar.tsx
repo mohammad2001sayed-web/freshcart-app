@@ -488,18 +488,18 @@ export default function Navbar() {
 
           {/* Mobile Hamburger + Sheet */}
           <div className="flex lg:hidden">
-            <div className="flex  gap-1">
+            <div className="flex items-center justify-center ">
               <Link
                 href="/wishlist"
                 className="flex items-center gap-2 py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
               >
-                <Heart className="w-5 h-5" />
+                <Heart size={20} className="" />
               </Link>
               <Link
-                href="/shope"
+                href="/cart"
                 className="block py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg relative"
               >
-                <ShoppingCart className="w-5 h-5 " />
+                <ShoppingCart size={20} className=" " />
                 {count > 0 && (
                   <Badge className="bg-main-color absolute -top-1 right-1">
                     {count}
@@ -512,8 +512,8 @@ export default function Navbar() {
               open={open && isMobile}
               onOpenChange={(val) => isMobile && setOpen(val)}
             >
-              <SheetTrigger className="p-2 rounded-lg hover:bg-gray-100 flex lg:hidden">
-                <Menu className="w-6 h-6" />
+              <SheetTrigger className="w-10 h-10 rounded-full bg-main-color hover:bg-main-color/70 flex justify-center items-center lg:hidden">
+                <Menu className="w-6 h-6 text-white" />
               </SheetTrigger>
               <SheetContent
                 side="right"
