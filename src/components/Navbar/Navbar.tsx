@@ -89,6 +89,16 @@ export default function Navbar() {
 
   const navLinks = (
     <>
+      <div className="relative  flex-1 flex items-center my-2">
+        <Input
+          className="w-full rounded-2xl border p-2 focus:outline-2 placeholder:text-[12px] outline-main-color"
+          placeholder="search for product, brands and more..."
+        />
+        <AppButton className="absolute right-2 flex items-center justify-center rounded-full bg-main-color w-8 h-8 hover:bg-main-color/80">
+          <Search className=" text-white" />
+        </AppButton>
+      </div>
+
       <Link
         href="/"
         onClick={() => setOpen(false)}
@@ -169,7 +179,6 @@ export default function Navbar() {
               className="flex items-center gap-2 py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
               href="/Profile"
             >
-              
               <User size={20} /> {data?.user?.name}
             </Link>
           </div>
@@ -229,7 +238,7 @@ export default function Navbar() {
           <Image src={logo} alt="Logo" />
 
           {/* Search */}
-          <div className="relative flex-1 flex items-center">
+          <div className="relative hidden flex-1 md:flex items-center">
             <Input
               className="w-full rounded-2xl border p-2 focus:outline-2 placeholder:text-[12px] outline-main-color"
               placeholder="search for product, brands and more..."
@@ -479,6 +488,26 @@ export default function Navbar() {
 
           {/* Mobile Hamburger + Sheet */}
           <div className="flex lg:hidden">
+            <div className="flex  gap-1">
+              <Link
+                href="/wishlist"
+                className="flex items-center gap-2 py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
+              >
+                <Heart className="w-5 h-5" />
+              </Link>
+              <Link
+                href="/shope"
+                className="block py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg relative"
+              >
+                <ShoppingCart className="w-5 h-5 " />
+                {count > 0 && (
+                  <Badge className="bg-main-color absolute -top-1 right-1">
+                    {count}
+                  </Badge>
+                )}
+              </Link>
+            </div>
+
             <Sheet
               open={open && isMobile}
               onOpenChange={(val) => isMobile && setOpen(val)}
