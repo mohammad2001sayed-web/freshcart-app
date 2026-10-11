@@ -89,29 +89,29 @@ export const authJsConfing: NextAuthConfig = {
     signIn: "/login",
   },
   callbacks: {
-    signIn: async function ({ user, account }) {
-      // الدخول العادي بالإيميل والباسورد ما يتغيّرش
-      if (!account || account.provider === "credentials") return true;
+signIn: async function ({ user, account }) {
+  if (!account || account.provider === "credentials") return true;
 
-      if (!user.email) return false;
+  // لو فيسبوك مرجّعش إيميل، نعمل إيميل ثابت من الـ ID بتاعه
+  const email =
+    user.email ?? `${account.providerAccountId}@facebook.freshcart.app`;
 
-      const backendUser = await exchangeOAuthUserForBackendToken({
-        email: user.email,
-        name: user.name,
-      });
-      if (!backendUser) return false;
+  const backendUser = await exchangeOAuthUserForBackendToken({
+    email,
+    name: user.name,
+  });
+  if (!backendUser) return false;
 
-      // نفس اللي بتعمله في authorize: الـ id الحقيقي بيتطلع من التوكن
-      const decoded = jwtDecode<DecodedToken>(backendUser.tkn);
+  const decoded = jwtDecode<DecodedToken>(backendUser.tkn);
 
-      user.tkn = backendUser.tkn;
-      user._id = decoded.id;
-      user.role = backendUser.role;
-      user.phone = backendUser.phone;
-      user.name = backendUser.name ?? user.name;
-      return true;
-    },
-    jwt: async function ({ user, token, trigger, session }) {
+  user.email = email;   // 👈 مهم عشان الـ jwt callback بياخده
+  user.tkn = backendUser.tkn;
+  user._id = decoded.id;
+  user.role = backendUser.role;
+  user.phone = backendUser.phone;
+  user.name = backendUser.name ?? user.name;
+  return true;
+},    jwt: async function ({ user, token, trigger, session }) {
       if (user) {
         token.credantialsToken = user.tkn;
         token.role = user.role;
