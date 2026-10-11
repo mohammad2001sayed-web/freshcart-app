@@ -2,14 +2,13 @@
 
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ChevronDown,
   CircleUserRound,
-  Contact,
   Headset,
   Heart,
   LogOut,
-  MapPin,
   Menu,
   Package,
   Search,
@@ -33,12 +32,11 @@ import logo from "@/assets/logo.svg";
 import { Input } from "@base-ui/react";
 import { signOut, useSession } from "next-auth/react";
 import AppButton from "../AppButton/AppButton";
-import FristNav from "../FristNav/FristNav";
-import { CartCounterProvider } from "@/Context/CartCound/CartCound";
+// ملاحظة: اسم الفولدر لسه FristNav، لو غيرته لـ FirstNav عدّل المسار هنا بس
+import FirstNav from "../FristNav/FristNav";
+// ملاحظة: الاسم الأصلي CartCounterProvider بس هو في الحقيقة Context، فعملنا له alias
+import { CartCounterProvider as CartCounterContext } from "@/Context/CartCound/CartCound";
 import { Badge } from "../ui/badge";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,7 +46,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// 🔹 مصفوفة الروابط المخصصة لكل قسم مع الـ ID الخاص به في الـ API
+/* ------------------------------------------------------------------ */
+/* Constants                                                           */
+/* ------------------------------------------------------------------ */
+
+// الـ routes في مكان واحد: لو غيّرت /shope لـ /shop غيّرها هنا بس (وغيّر اسم الفولدر)
+const ROUTES = {
+  home: "/",
+  shop: "/shope",
+  brands: "/brands",
+  wishlist: "/wishlist",
+  cart: "/cart",
+  contact: "/contact",
+  login: "/login",
+  register: "/register",
+  profile: "/Profile",
+  orders: "/orders",
+  settings: "/Profile/settings",
+} as const;
+
 const categoriesNav = [
   { name: "All categories", href: "/categorise" },
   { name: "Electronics", href: "/categorise/6439d2d167d9aa4ca970649f" },
@@ -57,67 +73,110 @@ const categoriesNav = [
   { name: "Beauty & Health", href: "/categorise/6439d30b67d9aa4ca97064b1" },
 ];
 
+const userLinks = [
+  { href: ROUTES.profile, label: "My Profile", icon: User },
+  { href: ROUTES.orders, label: "My Orders", icon: Package },
+  { href: ROUTES.wishlist, label: "My Wishlist", icon: Heart },
+  { href: ROUTES.settings, label: "Settings", icon: Settings },
+];
+
+const mobileLinkClass =
+  "block py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg";
+const mobileIconLinkClass =
+  "flex items-center gap-2 py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg";
+const dropdownLinkClass =
+  "flex cursor-pointer items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors font-medium text-sm";
+
+/* ------------------------------------------------------------------ */
+/* SearchBar                                                           */
+/* ------------------------------------------------------------------ */
+
+function SearchBar({
+  className = "",
+  onSearched,
+}: {
+  className?: string;
+  onSearched?: () => void;
+}) {
+  const router = useRouter();
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const query = String(formData.get("search") ?? "").trim();
+    if (!query) return;
+
+    router.push(`${ROUTES.shop}?search=${encodeURIComponent(query)}`);
+    onSearched?.();
+  }
+
+  return (
+    <form
+      role="search"
+      onSubmit={handleSubmit}
+      className={`relative flex-1 items-center ${className}`}
+    >
+      <Input
+        name="search"
+        aria-label="Search products"
+        className="w-full rounded-2xl border p-2 pe-12 focus:outline-2 placeholder:text-[12px] outline-main-color"
+        placeholder="search for product, brands and more..."
+      />
+      <AppButton
+        type="submit"
+        aria-label="Search"
+        className="absolute right-2 flex items-center justify-center rounded-full bg-main-color w-8 h-8 hover:bg-main-color/80"
+      >
+        <Search className="text-white" />
+      </AppButton>
+    </form>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Navbar                                                              */
+/* ------------------------------------------------------------------ */
+
 export default function Navbar() {
-  const { count } = React.useContext(CartCounterProvider);
+  const { count } = React.useContext(CartCounterContext);
   const { data } = useSession();
   const [open, setOpen] = React.useState(false);
-  const [isMobile, setIsMobile] = React.useState(false);
   const [categoriesOpen, setCategoriesOpen] = React.useState(false);
-  const [userMenuOpen, setUserMenuOpen] = React.useState(false);
 
+  // اقفل الـ Sheet لو الشاشة كبرت لحجم ديسكتوب (من غير ما نعتمد على state في الـ render)
   React.useEffect(() => {
-    const check = () => {
-      const mobile = window.innerWidth < 1024;
-
-      setIsMobile(mobile);
-
-      // اقفل User Dropdown لما الشاشة تصغر
-      if (mobile) {
-        setUserMenuOpen(false);
-      }
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const handleChange = (e: MediaQueryListEvent) => {
+      if (e.matches) setOpen(false);
     };
-
-    check();
-
-    window.addEventListener("resize", check);
-
-    return () => window.removeEventListener("resize", check);
+    mq.addEventListener("change", handleChange);
+    return () => mq.removeEventListener("change", handleChange);
   }, []);
+
   function handleLogout() {
-    signOut({ redirectTo: "/login" });
+    signOut({ redirectTo: ROUTES.login });
   }
+
+  const closeSheet = () => setOpen(false);
 
   const navLinks = (
     <>
-      <div className="relative  flex-1 flex items-center my-2">
-        <Input
-          className="w-full rounded-2xl border p-2 focus:outline-2 placeholder:text-[12px] outline-main-color"
-          placeholder="search for product, brands and more..."
-        />
-        <AppButton className="absolute right-2 flex items-center justify-center rounded-full bg-main-color w-8 h-8 hover:bg-main-color/80">
-          <Search className=" text-white" />
-        </AppButton>
-      </div>
+      <SearchBar className="flex my-2" onSearched={closeSheet} />
 
-      <Link
-        href="/"
-        onClick={() => setOpen(false)}
-        className="block py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
-      >
+      <Link href={ROUTES.home} onClick={closeSheet} className={mobileLinkClass}>
         Home
       </Link>
 
-      <Link
-        href="/shope"
-        onClick={() => setOpen(false)}
-        className="block py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
-      >
+      <Link href={ROUTES.shop} onClick={closeSheet} className={mobileLinkClass}>
         Shop
       </Link>
 
-      {/* Categories Accordion الموبايل */}
+      {/* Categories Accordion للموبايل */}
       <button
-        onClick={() => setCategoriesOpen(!categoriesOpen)}
+        type="button"
+        aria-expanded={categoriesOpen}
+        aria-controls="mobile-categories"
+        onClick={() => setCategoriesOpen((prev) => !prev)}
         className="flex items-center justify-between w-full py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
       >
         <span>Categories</span>
@@ -129,12 +188,12 @@ export default function Navbar() {
       </button>
 
       {categoriesOpen && (
-        <div className="flex flex-col">
-          {categoriesNav.map((cat, i) => (
+        <div id="mobile-categories" className="flex flex-col">
+          {categoriesNav.map((cat) => (
             <Link
-              key={i}
+              key={cat.href}
               href={cat.href}
-              onClick={() => setOpen(false)}
+              onClick={closeSheet}
               className="block py-2 px-8 hover:bg-main-color/10 hover:text-main-color rounded-lg text-sm"
             >
               {cat.name}
@@ -143,28 +202,24 @@ export default function Navbar() {
         </div>
       )}
 
-      <Link
-        href="/brands"
-        onClick={() => setOpen(false)}
-        className="block py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
-      >
+      <Link href={ROUTES.brands} onClick={closeSheet} className={mobileLinkClass}>
         Brands
       </Link>
 
       <hr className="my-2" />
 
       <Link
-        href="/wishlist"
-        onClick={() => setOpen(false)}
-        className="flex items-center gap-2 py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
+        href={ROUTES.wishlist}
+        onClick={closeSheet}
+        className={mobileIconLinkClass}
       >
         <Heart className="w-5 h-5" /> Wishlist
       </Link>
 
       <Link
-        href="/cart"
-        onClick={() => setOpen(false)}
-        className="flex items-center gap-2 py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
+        href={ROUTES.cart}
+        onClick={closeSheet}
+        className={mobileIconLinkClass}
       >
         <ShoppingCart className="w-5 h-5" /> Cart
         {count > 0 && <Badge className="bg-main-color">{count}</Badge>}
@@ -176,16 +231,18 @@ export default function Navbar() {
         <>
           <div className="py-3 text-sm text-gray-600">
             <Link
-              className="flex items-center gap-2 py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
-              href="/Profile"
+              className={mobileIconLinkClass}
+              href={ROUTES.profile}
+              onClick={closeSheet}
             >
               <User size={20} /> {data?.user?.name}
             </Link>
           </div>
           <button
+            type="button"
             onClick={() => {
               handleLogout();
-              setOpen(false);
+              closeSheet();
             }}
             className="flex items-center gap-2 py-3 px-4 w-full text-left hover:bg-red-50 hover:text-red-500 rounded-lg"
           >
@@ -195,26 +252,23 @@ export default function Navbar() {
       ) : (
         <div className="flex gap-2">
           <Link
-            href="/login"
-            onClick={() => setOpen(false)}
-            className="flex grow items-center gap-2 py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
+            href={ROUTES.login}
+            onClick={closeSheet}
+            className={`grow ${mobileIconLinkClass}`}
           >
             <User className="w-5 h-5" /> Sign In
           </Link>
           <Link
-            href="/register"
-            onClick={() => setOpen(false)}
-            className="flex grow items-center gap-2 py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
+            href={ROUTES.register}
+            onClick={closeSheet}
+            className={`grow ${mobileIconLinkClass}`}
           >
             <UserPlus className="w-5 h-5" /> Sign Up
           </Link>
         </div>
       )}
-      <Link
-        href="/contact"
-        onClick={() => setOpen(false)}
-        className="block py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
-      >
+
+      <Link href={ROUTES.contact} onClick={closeSheet} className={mobileLinkClass}>
         <div className="flex items-center gap-2">
           <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[#F3FDF6]">
             <Headset className="text-main-color size-5" />
@@ -230,23 +284,17 @@ export default function Navbar() {
 
   return (
     <>
-      <FristNav />
+      <FirstNav />
 
       <nav className="shadow-2xl py-2 sticky inset-x-0 top-0 z-50 bg-white">
         <div className="container flex items-center justify-between gap-4">
           {/* Logo */}
-          <Image src={logo} alt="Logo" />
+          <Link href={ROUTES.home} aria-label="Go to home page">
+            <Image src={logo} alt="Logo" priority />
+          </Link>
 
-          {/* Search */}
-          <div className="relative hidden flex-1 md:flex items-center">
-            <Input
-              className="w-full rounded-2xl border p-2 focus:outline-2 placeholder:text-[12px] outline-main-color"
-              placeholder="search for product, brands and more..."
-            />
-            <AppButton className="absolute right-2 flex items-center justify-center rounded-full bg-main-color w-8 h-8 hover:bg-main-color/80">
-              <Search className=" text-white" />
-            </AppButton>
-          </div>
+          {/* Search (md وأكبر) */}
+          <SearchBar className="hidden md:flex" />
 
           {/* Desktop Nav */}
           <NavigationMenu className="hidden lg:flex">
@@ -254,25 +302,25 @@ export default function Navbar() {
               <NavigationMenuItem className="hover:text-main-color">
                 <NavigationMenuLink
                   className={navigationMenuTriggerStyle()}
-                  render={<Link href="/">Home</Link>}
+                  render={<Link href={ROUTES.home}>Home</Link>}
                 />
               </NavigationMenuItem>
 
               <NavigationMenuItem className="hover:text-main-color">
                 <NavigationMenuLink
                   className={navigationMenuTriggerStyle()}
-                  render={<Link href="/shope">Shop</Link>}
+                  render={<Link href={ROUTES.shop}>Shop</Link>}
                 />
               </NavigationMenuItem>
 
-              {/* 🔹 Categories Dropdown الكمبيوتر */}
+              {/* Categories Dropdown للكمبيوتر */}
               <NavigationMenuItem className="hover:text-main-color">
                 <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="min-w-45 p-2 bg-white rounded-xl shadow-lg border border-gray-100">
-                    {categoriesNav.map((cat, i) => (
+                    {categoriesNav.map((cat) => (
                       <li
-                        key={i}
+                        key={cat.href}
                         className="rounded-lg hover:bg-main-color/10 hover:text-main-color transition-colors"
                       >
                         <Link
@@ -290,7 +338,7 @@ export default function Navbar() {
               <NavigationMenuItem className="hover:text-main-color">
                 <NavigationMenuLink
                   className={navigationMenuTriggerStyle()}
-                  render={<Link href="/brands">Brands</Link>}
+                  render={<Link href={ROUTES.brands}>Brands</Link>}
                 />
               </NavigationMenuItem>
 
@@ -298,7 +346,7 @@ export default function Navbar() {
                 <NavigationMenuLink
                   className={navigationMenuTriggerStyle()}
                   render={
-                    <Link href="/contact">
+                    <Link href={ROUTES.contact}>
                       <div className="flex items-center gap-2">
                         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[#F3FDF6]">
                           <Headset className="text-main-color size-5" />
@@ -317,7 +365,7 @@ export default function Navbar() {
                 <NavigationMenuLink
                   className={navigationMenuTriggerStyle()}
                   render={
-                    <Link href="/wishlist">
+                    <Link href={ROUTES.wishlist} aria-label="Wishlist">
                       <Heart />
                     </Link>
                   }
@@ -328,7 +376,13 @@ export default function Navbar() {
                 <NavigationMenuLink
                   className={navigationMenuTriggerStyle()}
                   render={
-                    <Link href="/cart" className="relative">
+                    <Link
+                      href={ROUTES.cart}
+                      className="relative"
+                      aria-label={
+                        count > 0 ? `Cart, ${count} items` : "Cart"
+                      }
+                    >
                       <ShoppingCart />
                       {count > 0 && (
                         <Badge className="bg-main-color absolute -top-2 left-4">
@@ -341,128 +395,89 @@ export default function Navbar() {
               </NavigationMenuItem>
 
               {data ? (
-                <>
-                  <NavigationMenuItem>
-                    <NavigationMenuLink
-                      className={navigationMenuTriggerStyle()}
-                      render={
-                        <DropdownMenu
-                          modal={false}
-                          open={userMenuOpen && !isMobile}
-                          onOpenChange={(value) => {
-                            if (!isMobile) {
-                              setUserMenuOpen(value);
-                            }
-                          }}
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    className={navigationMenuTriggerStyle()}
+                    render={
+                      <DropdownMenu modal={false}>
+                        <DropdownMenuTrigger
+                          render={
+                            <button
+                              type="button"
+                              aria-label="User menu"
+                              className="flex items-center justify-center p-1 rounded-full text-slate-700 hover:text-emerald-600 hover:bg-slate-100 transition-colors focus:outline-none"
+                            >
+                              <CircleUserRound className="stroke-[1.5]" />
+                            </button>
+                          }
+                        />
+
+                        <DropdownMenuContent
+                          className="w-60 p-0 rounded-2xl shadow-xl border border-gray-100 bg-white overflow-hidden mt-2"
+                          align="end"
                         >
-                          <DropdownMenuTrigger
-                            render={
-                              <button className="flex items-center justify-center p-1 rounded-full text-slate-700 hover:text-emerald-600 hover:bg-slate-100 transition-colors focus:outline-none">
-                                <CircleUserRound className="stroke-[1.5]" />
-                              </button>
-                            }
-                          />
+                          {/* User Info */}
+                          <div className="flex items-center gap-3.5 p-4">
+                            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100/80 shrink-0">
+                              <CircleUserRound className="text-main-color stroke-[1.8]" />
+                            </div>
 
-                          <DropdownMenuContent
-                            className=" w-60 p-0 rounded-2xl shadow-xl border border-gray-100 bg-white overflow-hidden mt-2"
-                            align="end"
-                          >
-                            {/* User Info */}
-                            <div className="flex items-center gap-3.5 p-4">
-                              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100/80 shrink-0">
-                                <CircleUserRound className="text-main-color stroke-[1.8]" />
-                              </div>
-
-                              <div className="flex flex-col min-w-0">
-                                <p className="text-base font-bold text-slate-800 truncate">
-                                  {data?.user?.name || "Alice Michael"}
-                                </p>
-
+                            <div className="flex flex-col min-w-0">
+                              <p className="text-base font-bold text-slate-800 truncate">
+                                {data?.user?.name || "User"}
+                              </p>
+                              {data?.user?.email && (
                                 <p className="text-xs text-slate-400 font-medium truncate">
-                                  {data?.user?.email ||
-                                    "mocybuparu@mailinator.com"}
+                                  {data.user.email}
                                 </p>
-                              </div>
+                              )}
                             </div>
+                          </div>
 
-                            <DropdownMenuSeparator className="m-0 bg-gray-100/80" />
+                          <DropdownMenuSeparator className="m-0 bg-gray-100/80" />
 
-                            {/* Links */}
-                            <DropdownMenuGroup className="p-2 space-y-0.5">
+                          {/* Links */}
+                          <DropdownMenuGroup className="p-2 space-y-0.5">
+                            {userLinks.map(({ href, label, icon: Icon }) => (
                               <DropdownMenuItem
+                                key={href}
                                 render={
-                                  <Link
-                                    href="/Profile"
-                                    className="flex cursor-pointer items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors font-medium text-sm"
-                                  >
-                                    <User className="w-5 h-5 text-slate-400 stroke-[1.7]" />
-                                    <span>My Profile</span>
+                                  <Link href={href} className={dropdownLinkClass}>
+                                    <Icon className="w-5 h-5 text-slate-400 stroke-[1.7]" />
+                                    <span>{label}</span>
                                   </Link>
                                 }
                               />
+                            ))}
+                          </DropdownMenuGroup>
 
-                              <DropdownMenuItem
-                                render={
-                                  <Link
-                                    href="/orders"
-                                    className="flex cursor-pointer items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors font-medium text-sm"
-                                  >
-                                    <Package className="w-5 h-5 text-slate-400 stroke-[1.7]" />
-                                    <span>My Orders</span>
-                                  </Link>
-                                }
-                              />
+                          <DropdownMenuSeparator className="m-0 bg-gray-100/80" />
 
-                              <DropdownMenuItem
-                                render={
-                                  <Link
-                                    href="/wishlist"
-                                    className="flex cursor-pointer items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors font-medium text-sm"
-                                  >
-                                    <Heart className="w-5 h-5 text-slate-400 stroke-[1.7]" />
-                                    <span>My Wishlist</span>
-                                  </Link>
-                                }
-                              />
-
-                              <DropdownMenuItem
-                                render={
-                                  <Link
-                                    href="/Profile/settings"
-                                    className="flex cursor-pointer items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors font-medium text-sm"
-                                  >
-                                    <Settings className="w-5 h-5 text-slate-400 stroke-[1.7]" />
-                                    <span>Settings</span>
-                                  </Link>
-                                }
-                              />
-                            </DropdownMenuGroup>
-
-                            <DropdownMenuSeparator className="m-0 bg-gray-100/80" />
-
-                            {/* Sign Out */}
-                            <div className="p-2">
-                              <DropdownMenuItem
-                                onClick={handleLogout}
-                                className="cursor-pointer rounded-lg px-3 py-2.5 text-rose-500 hover:bg-rose-50 transition-colors flex items-center gap-3.5 font-semibold text-sm"
-                              >
-                                <LogOut className="w-5 h-5 text-rose-500 stroke-2" />
-                                <span>Sign Out</span>
-                              </DropdownMenuItem>
-                            </div>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      }
-                    />
-                  </NavigationMenuItem>
-                </>
+                          {/* Sign Out */}
+                          <div className="p-2">
+                            <DropdownMenuItem
+                              onClick={handleLogout}
+                              className="cursor-pointer rounded-lg px-3 py-2.5 text-rose-500 hover:bg-rose-50 transition-colors flex items-center gap-3.5 font-semibold text-sm"
+                            >
+                              <LogOut className="w-5 h-5 text-rose-500 stroke-2" />
+                              <span>Sign Out</span>
+                            </DropdownMenuItem>
+                          </div>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    }
+                  />
+                </NavigationMenuItem>
               ) : (
                 <>
                   <NavigationMenuItem>
                     <NavigationMenuLink
                       className={navigationMenuTriggerStyle()}
                       render={
-                        <Link href="/login" className="flex items-center gap-1">
+                        <Link
+                          href={ROUTES.login}
+                          className="flex items-center gap-1"
+                        >
                           <User /> Sign In
                         </Link>
                       }
@@ -473,7 +488,7 @@ export default function Navbar() {
                       className={navigationMenuTriggerStyle()}
                       render={
                         <Link
-                          href="/register"
+                          href={ROUTES.register}
                           className="flex items-center gap-1"
                         >
                           <UserPlus /> Sign Up
@@ -486,20 +501,22 @@ export default function Navbar() {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Mobile Hamburger + Sheet */}
+          {/* Mobile: Wishlist + Cart + Hamburger Sheet */}
           <div className="flex lg:hidden">
-            <div className="flex items-center justify-center ">
+            <div className="flex items-center justify-center">
               <Link
-                href="/wishlist"
-                className="flex items-center gap-2 py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg"
+                href={ROUTES.wishlist}
+                aria-label="Wishlist"
+                className={mobileIconLinkClass}
               >
-                <Heart size={20} className="" />
+                <Heart size={20} />
               </Link>
               <Link
-                href="/cart"
-                className="block py-3 px-4 hover:bg-main-color/10 hover:text-main-color rounded-lg relative"
+                href={ROUTES.cart}
+                aria-label={count > 0 ? `Cart, ${count} items` : "Cart"}
+                className={`${mobileLinkClass} relative`}
               >
-                <ShoppingCart size={20} className=" " />
+                <ShoppingCart size={20} />
                 {count > 0 && (
                   <Badge className="bg-main-color absolute -top-1 right-1">
                     {count}
@@ -508,11 +525,11 @@ export default function Navbar() {
               </Link>
             </div>
 
-            <Sheet
-              open={open && isMobile}
-              onOpenChange={(val) => isMobile && setOpen(val)}
-            >
-              <SheetTrigger className="w-10 h-10 rounded-full bg-main-color hover:bg-main-color/70 flex justify-center items-center lg:hidden">
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger
+                aria-label="Open menu"
+                className="w-10 h-10 rounded-full bg-main-color hover:bg-main-color/70 flex justify-center items-center lg:hidden"
+              >
                 <Menu className="w-6 h-6 text-white" />
               </SheetTrigger>
               <SheetContent
@@ -520,7 +537,9 @@ export default function Navbar() {
                 className="w-72! p-4 flex flex-col gap-1 overflow-y-auto"
               >
                 <div className="mb-4">
-                  <Image src={logo} alt="Logo" width={100} />
+                  <Link href={ROUTES.home} onClick={closeSheet}>
+                    <Image src={logo} alt="Logo" width={100} />
+                  </Link>
                 </div>
                 {navLinks}
               </SheetContent>
