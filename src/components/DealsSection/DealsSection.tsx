@@ -127,7 +127,7 @@ export default function DealsSection() {
 
                   {/* Button */}
                   <Link
-                    href="/shope"
+                    href="/shop"
                     className={`bg-white ${deal.buttonText} w-fit rounded-full px-6 py-2.5 text-sm md:text-base font-semibold flex items-center gap-2 hover:opacity-95 transition-opacity`}
                   >
                     <span>{deal.button}</span>

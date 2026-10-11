@@ -50,10 +50,10 @@ import {
 /* Constants                                                           */
 /* ------------------------------------------------------------------ */
 
-// الـ routes في مكان واحد: لو غيّرت /shope لـ /shop غيّرها هنا بس (وغيّر اسم الفولدر)
+// الـ routes في مكان واحد: لو غيّرت /shop لـ /shop غيّرها هنا بس (وغيّر اسم الفولدر)
 const ROUTES = {
   home: "/",
-  shop: "/shope",
+  shop: "/shop",
   brands: "/brands",
   wishlist: "/wishlist",
   cart: "/cart",

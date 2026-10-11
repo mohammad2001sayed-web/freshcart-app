@@ -132,7 +132,7 @@ export default function NotFound() {
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/shope"
+              href="/shop"
               className="rounded-xl bg-emerald-50 px-5 py-3 text-sm font-semibold text-emerald-700 transition-colors hover:bg-emerald-100"
             >
               All Products

@@ -111,7 +111,7 @@ export default function ProductDetailsClient({
         </Link>
         <span>/</span>
         <Link
-          href="/shope"
+          href="/shop"
           className="hover:text-emerald-600 transition-colors"
         >
           {category?.name || "Category"}

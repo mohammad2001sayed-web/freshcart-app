@@ -64,7 +64,7 @@ export default async function SingleBrandPage({ params }: PageProps) {
             <Funnel size={16} fill="#000" /> <span>Active Filters:</span>{" "}
             <Link
               className="flex items-center gap-2 bg-[#EDE9FE] text-sm px-4 py-1 text-[#7008E7] hover:bg-violet-200 transition-colors font-semibold rounded-3xl "
-              href="/shope"
+              href="/shop"
             >
               {" "}
               <Tags size={15} />
@@ -73,7 +73,7 @@ export default async function SingleBrandPage({ params }: PageProps) {
             </Link>{" "}
             <Link
               className="flex items-center gap-2 underline text-sm  text-gray-500 font-semibold hover:text-black transition-colors"
-              href="/shope"
+              href="/shop"
             >
               Clear all
             </Link>

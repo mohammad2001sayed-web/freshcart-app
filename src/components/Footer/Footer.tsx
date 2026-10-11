@@ -199,7 +199,7 @@ export default function Footer() {
           <FooterColumn
             title="Shop"
             links={[
-              { name: "All Products", href: "/shope" },
+              { name: "All Products", href: "/shop" },
               { name: "Categories", href: "/categorise" },
               { name: "Brands", href: "/brands" },
               { name: "Electronics", href: "/categorise/6439d2d167d9aa4ca970649f" },
